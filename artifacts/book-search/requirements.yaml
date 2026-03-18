@@ -1,0 +1,11 @@
+packages:
+  "framer-motion": "For smooth page transitions and staggered list animations"
+  "react-dropzone": "For elegant drag-and-drop file upload"
+  "clsx": "Utility for constructing className strings"
+  "tailwind-merge": "Utility to safely merge tailwind classes"
+
+images: []
+
+notes:
+  - Using generated Orval hooks from @workspace/api-client-react
+  - Assuming UI should be in Russian based on the prompt instructions

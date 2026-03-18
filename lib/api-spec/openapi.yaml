@@ -1,15 +1,18 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Book Search RAG API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: books
+    description: Book management
+  - name: search
+    description: Search and Q&A
 paths:
   /healthz:
     get:
@@ -24,6 +27,129 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /books:
+    get:
+      operationId: listBooks
+      tags: [books]
+      summary: List all uploaded books
+      responses:
+        "200":
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    post:
+      operationId: uploadBook
+      tags: [books]
+      summary: Upload a new book
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+                author:
+                  type: string
+              required: [file]
+      responses:
+        "201":
+          description: Book uploaded and indexed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /books/{bookId}:
+    delete:
+      operationId: deleteBook
+      tags: [books]
+      summary: Delete a book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Book deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /search/fragments:
+    post:
+      operationId: searchFragments
+      tags: [search]
+      summary: Search for relevant text fragments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: Found fragments
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchFragmentsResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /search/answer:
+    post:
+      operationId: answerQuestion
+      tags: [search]
+      summary: Answer a question based on book content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: AI answer with citations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnswerResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +157,106 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        filename:
+          type: string
+        chunkCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, title, author, filename, chunkCount, createdAt]
+
+    SearchRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          minLength: 1
+        topK:
+          type: integer
+          default: 5
+          minimum: 1
+          maximum: 10
+      required: [query]
+
+    TextFragment:
+      type: object
+      properties:
+        id:
+          type: integer
+        bookId:
+          type: integer
+        bookTitle:
+          type: string
+        bookAuthor:
+          type: string
+        chunkIndex:
+          type: integer
+        content:
+          type: string
+        chapterTitle:
+          type: string
+        similarity:
+          type: number
+      required: [id, bookId, bookTitle, bookAuthor, chunkIndex, content, similarity]
+
+    SearchFragmentsResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        fragments:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextFragment"
+        found:
+          type: boolean
+        message:
+          type: string
+      required: [query, fragments, found]
+
+    AnswerResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        answer:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextFragment"
+        found:
+          type: boolean
+        message:
+          type: string
+      required: [query, answer, citations, found]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success, message]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error, message]
