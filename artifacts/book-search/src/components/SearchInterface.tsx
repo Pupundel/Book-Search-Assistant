@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Sparkles, Send, Loader2, FileX, BookOpen, History, X, Cpu } from "lucide-react";
+import { Search, Sparkles, Send, Loader2, FileX, BookOpen, History, X } from "lucide-react";
 import { useSearchFragments, useAnswerQuestion } from "../hooks/use-app-queries";
 import { FragmentCard } from "./FragmentCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -73,10 +73,6 @@ export function SearchInterface() {
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-foreground">
             Книжный <span className="text-primary italic">Искатель</span>
           </h1>
-          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-            <Cpu className="w-3 h-3" />
-            <span>Mistral AI</span>
-          </div>
         </div>
 
         <div className="flex p-1 bg-muted rounded-xl border border-border shadow-inner">
