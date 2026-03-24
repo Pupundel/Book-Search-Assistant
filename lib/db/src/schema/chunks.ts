@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, real, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { booksTable } from "./books";
@@ -9,6 +9,7 @@ export const chunksTable = pgTable("chunks", {
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
   chapterTitle: text("chapter_title"),
+  embedding: text("embedding"),
 }, (table) => [
   index("chunks_book_id_idx").on(table.bookId),
 ]);
