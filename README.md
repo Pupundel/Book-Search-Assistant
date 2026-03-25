@@ -87,7 +87,7 @@ pnpm run typecheck
 pnpm run build
 ```
 
-##Технологический стек
+## Технологический стек
 Языки программирования: 'TypeScript, JavaScript, CSS, HTML, Batchfile, Shell'
 
 Искусственный интеллект: 'Mistral AI API'
