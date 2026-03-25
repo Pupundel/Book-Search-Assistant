@@ -23,7 +23,9 @@ pnpm install
 MISTRAL_API_KEY=your_mistral_api_key_here
 DATABASE_URL=postgres://bookuser:bookpass@localhost:5432/bookdb
 ```
-
+```Если нет своего ключа
+ahf39JhR1kwmHEO1cP4UyT4KxD4w6V5E
+```
 Не коммить `.env`. Ключи, которые попали в чат или в git, нужно отозвать в [консоли Mistral](https://console.mistral.ai/) и выпустить новый.
 
 API не подхватывает `.env` сам по себе: задай `PORT`, `DATABASE_URL`, `MISTRAL_API_KEY` в PowerShell (как ниже) или используй свой способ загрузки env.
@@ -84,3 +86,13 @@ pnpm --filter @workspace/book-search dev
 pnpm run typecheck
 pnpm run build
 ```
+
+##Технологический стек
+Языки программирования: 'TypeScript, JavaScript, CSS, HTML, Batchfile, Shell'
+
+Искусственный интеллект: 'Mistral AI API'
+
+База данных: 'PostgreSQL 15+'
+
+
+Пример работы, а также загрузки книг, можно увидеть на видео, которое прикреплено на яндекс диске.
