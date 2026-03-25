@@ -13,8 +13,9 @@ export function BookSidebar({ onOpenUpload, className }: BookSidebarProps) {
   const { data: books, isLoading } = useAppListBooks();
   const { mutate: deleteBook, isPending: isDeleting } = useAppDeleteBook();
   const { toast } = useToast();
+  const bookList = Array.isArray(books) ? books : [];
 
-  const totalChunks = books?.reduce((acc, b) => acc + b.chunkCount, 0) ?? 0;
+  const totalChunks = bookList.reduce((acc, b) => acc + b.chunkCount, 0);
 
   const handleDelete = (id: number, title: string) => {
     if (confirm(`Вы уверены, что хотите удалить книгу "${title}"?`)) {
@@ -39,12 +40,12 @@ export function BookSidebar({ onOpenUpload, className }: BookSidebarProps) {
         </div>
 
         {/* Stats */}
-        {books && books.length > 0 && (
+        {bookList.length > 0 && (
           <div className="flex gap-2 text-xs">
             <div className="flex items-center gap-1.5 bg-background rounded-lg px-2.5 py-1.5 border border-border">
               <BookOpen className="w-3 h-3 text-primary" />
-              <span className="font-medium text-foreground">{books.length}</span>
-              <span className="text-muted-foreground">{books.length === 1 ? "книга" : books.length < 5 ? "книги" : "книг"}</span>
+              <span className="font-medium text-foreground">{bookList.length}</span>
+              <span className="text-muted-foreground">{bookList.length === 1 ? "книга" : bookList.length < 5 ? "книги" : "книг"}</span>
             </div>
             <div className="flex items-center gap-1.5 bg-background rounded-lg px-2.5 py-1.5 border border-border">
               <Hash className="w-3 h-3 text-primary" />
@@ -60,13 +61,13 @@ export function BookSidebar({ onOpenUpload, className }: BookSidebarProps) {
           <div className="flex justify-center p-8">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
-        ) : books?.length === 0 ? (
+        ) : bookList.length === 0 ? (
           <div className="text-center p-6 bg-background/50 rounded-xl border border-dashed border-border mt-4">
             <p className="text-sm text-muted-foreground">Библиотека пуста</p>
             <p className="text-xs text-muted-foreground mt-1">Добавьте книгу ниже</p>
           </div>
         ) : (
-          books?.map((book: BookType) => (
+          bookList.map((book: BookType) => (
             <div
               key={book.id}
               className="group flex items-start gap-3 p-3 rounded-xl hover:bg-sidebar-accent border border-transparent hover:border-sidebar-accent-border transition-all duration-200"
